@@ -7,11 +7,9 @@ import { api } from '@/convex/_generated/api'
 import { useEffect } from 'react'
 
 function TextEditor({fileId}: {fileId: string}) {
-
     const notes = useQuery(api.notes.GetNotes,{
         fileId:fileId
     })
-    
 
     const editor = useEditor({
         extensions: [StarterKit,
@@ -21,7 +19,7 @@ function TextEditor({fileId}: {fileId: string}) {
         ],
         editorProps:{
             attributes: {
-                class: 'focus: outline-none h-screen p-5'
+                class: 'focus:outline-none min-h-full p-5 prose prose-sm max-w-none'
             }
         }
     })
@@ -32,13 +30,11 @@ function TextEditor({fileId}: {fileId: string}) {
         }
     },[editor, notes])
 
-    
-
     return (
-        <div>
+        <div className="flex flex-col h-full">
             {editor && <EditorExtensions editor={editor} />}    
-            <div className='h-[88vh] overflow-scroll'>
-              <EditorContent editor={editor} />
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                <EditorContent editor={editor} className="h-full" />
             </div>
         </div>
     )

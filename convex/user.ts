@@ -1,7 +1,7 @@
 import { mutation } from "./_generated/server";
 import {v} from "convex/values";
 
-const createUser = mutation({
+export const createUser = mutation({
     args:{
         email: v.string(),
         userName: v.string(),
@@ -26,7 +26,4 @@ const createUser = mutation({
         return "User Already Exists"
         
     }
-
-})
-
-export default createUser;
+});

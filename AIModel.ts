@@ -3,12 +3,12 @@ import {
     HarmCategory,
     HarmBlockThreshold,
   } from "@google/generative-ai";
-  
-  const apiKey = process.env.NEXT_PUBLUC_GEMINI_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("Missing Gemini API key");
   const genAI = new GoogleGenerativeAI(apiKey);
   
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-exp",
+    model: "gemini-pro", 
   });
   
   const generationConfig = {
@@ -19,11 +19,11 @@ import {
     responseMimeType: "text/plain",
   };
   
-    EXPORT const chatSession = model.startChat({
-      generationConfig,
-      history: [
-      ],
-    });
+  export const chatSession = model.startChat({
+    generationConfig,
+    history: [
+    ],
+  });
   
     // const result = await chatSession.sendMessage("INSERT_INPUT_HERE");
     // console.log(result.response.text());
