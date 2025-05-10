@@ -1,7 +1,6 @@
 "use client"
 
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import TextEditor from "../_components/TextEditor";
@@ -11,9 +10,6 @@ import PdfViewer from "../_components/PdfViewer";
 function Workspace() {
   const params = useParams();
   const fileId = Array.isArray(params.fileId) ? params.fileId[0] : params.fileId;
-  
-  const [isLoading, setIsLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
 
   // Get mutations
   const getFileUrl = useMutation(api.fileStorage.getFileUrl);
@@ -51,17 +47,10 @@ function Workspace() {
           console.error("Error fetching file URL:", error);
         }
       }
-      setIsLoading(false);
     };
 
     fetchFileUrl();
   }, [fileInfo, fileUrl, getFileUrl, addFileEntry]);
-
-  // Function to retry loading the file
-  const handleRetry = () => {
-    setIsLoading(true);
-    setRetryCount(prev => prev + 1);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,7 +62,7 @@ function Workspace() {
           <div className="h-[calc(100vh-12rem)]">
             <PdfViewer 
               fileUrl={fileUrl} 
-              onRetry={handleRetry}
+              onRetry={() => {}} // Optional: stubbed out if needed by PdfViewer props
             />
           </div>
 

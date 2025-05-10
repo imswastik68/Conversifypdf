@@ -23,7 +23,7 @@ export default function PdfEmptyState() {
           <div className="w-5 h-5 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 text-xs font-medium">
             1
           </div>
-          <span>Click on the "Upload PDF File" button above</span>
+          <span>Click on the &quot;Upload PDF File&quot; button above</span>
         </div>
         
         <div className="flex items-center gap-2">

@@ -4,7 +4,6 @@ import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import Image from 'next/image';
-import Link from "next/link";
 import { Calendar, FileText, UploadCloud } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";

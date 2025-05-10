@@ -1,5 +1,4 @@
 import { UserButton } from "@clerk/nextjs"
-import Image from "next/image"
 import { FileText } from "lucide-react"
 
 function WorkspaceHeader({ fileName }: { fileName: string }) {

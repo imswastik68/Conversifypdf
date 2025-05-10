@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     try {
       body = await request.json();
     } catch (error) {
+      console.error('Invalid JSON:', error);
       return NextResponse.json(
         { error: 'Invalid JSON in request body' } as ErrorResponse,
         { status: 400 }

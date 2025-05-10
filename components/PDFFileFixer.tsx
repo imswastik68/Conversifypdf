@@ -1,57 +1,78 @@
 import { useState } from 'react';
-import { useQuery, useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '../convex/_generated/api';
 
-const PDFFileFixer = () => {
-  const [fileId, setFileId] = useState('');
-  const [checkResult, setCheckResult] = useState(null);
-  const [fixResult, setFixResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFixing, setIsFixing] = useState(false);
+interface CheckResult {
+  exists: boolean;
+  message: string;
+  storageId: string | null;
+  fileUrl: string | null;
+  debugInfo: Record<string, any>;
+  error?: boolean;
+}
+
+interface FixResult {
+  success: boolean;
+  message: string;
+  fileRecord?: Record<string, any>;
+}
+
+const PDFFileFixer: React.FC = () => {
+  const [fileId, setFileId] = useState<string>('');
+  const [checkResult, setCheckResult] = useState<CheckResult | null>(null);
+  const [fixResult, setFixResult] = useState<FixResult | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isFixing, setIsFixing] = useState<boolean>(false);
 
   // Get the direct file check function
-  const checkFile = useMutation(api.fileStorage.CheckFileExists);
+  const checkFile = useQuery(api.fileStorage.CheckFileExists, { fileId });
   const fixFile = useMutation(api.fileStorage.fixFileRecord);
 
-  const handleCheck = async () => {
+  const handleCheck = async (): Promise<void> => {
     if (!fileId) return;
-    
+
     setIsLoading(true);
     setCheckResult(null);
     setFixResult(null);
-    
+
     try {
-      const result = await checkFile({ fileId });
-      setCheckResult(result);
-    } catch (error) {
+      if (checkFile) {
+        setCheckResult(checkFile as CheckResult);
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred while checking the file';
       setCheckResult({
         error: true,
-        message: error.message || 'An error occurred while checking the file'
+        message: errorMessage,
+        exists: false,
+        storageId: null,
+        fileUrl: null,
+        debugInfo: {},
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFix = async () => {
+  const handleFix = async (): Promise<void> => {
     if (!fileId) return;
-    
+
     setIsFixing(true);
     setFixResult(null);
-    
+
     try {
       const result = await fixFile({ fileId });
       setFixResult(result);
-      
+
       // If fix was successful, refresh the file status
-      if (result.success) {
-        const updatedStatus = await checkFile({ fileId });
-        setCheckResult(updatedStatus);
+      if (result.success && checkFile) {
+        setCheckResult(checkFile as CheckResult);
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred while fixing the file';
       setFixResult({
         success: false,
-        message: error.message || 'An error occurred while fixing the file'
+        message: errorMessage,
       });
     } finally {
       setIsFixing(false);
@@ -61,7 +82,7 @@ const PDFFileFixer = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">PDF File Diagnostics & Repair Tool</h1>
-      
+
       <div className="mb-6 p-4 bg-gray-100 rounded">
         <div className="flex items-end gap-2">
           <div className="flex-1">
@@ -89,7 +110,7 @@ const PDFFileFixer = () => {
       {checkResult && (
         <div className="mb-6 p-4 border rounded">
           <h2 className="text-lg font-semibold mb-2">File Status</h2>
-          
+
           {checkResult.error ? (
             <div className="bg-red-100 border-l-4 border-red-500 p-4">
               <p className="text-red-700">{checkResult.message}</p>
@@ -149,7 +170,7 @@ const PDFFileFixer = () => {
               {fixResult.message}
             </p>
           </div>
-          
+
           {fixResult.fileRecord && (
             <div className="mt-4">
               <p className="text-sm font-medium text-gray-500 mb-1">Updated File Record</p>
@@ -164,9 +185,9 @@ const PDFFileFixer = () => {
       {checkResult && checkResult.fileUrl && (
         <div className="mt-6">
           <h2 className="text-lg font-semibold mb-2">File Preview</h2>
-          <iframe 
-            src={checkResult.fileUrl} 
-            className="w-full h-96 border" 
+          <iframe
+            src={checkResult.fileUrl}
+            className="w-full h-96 border"
             title="PDF Preview"
           />
         </div>
