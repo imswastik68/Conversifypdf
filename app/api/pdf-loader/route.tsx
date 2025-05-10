@@ -82,12 +82,12 @@ export async function GET(request: Request) {
       },
       chunks: result
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error processing PDF:", error);
     return NextResponse.json(
       { 
         error: "Failed to process PDF",
-        details: error.message 
+        details: error instanceof Error ? error.message : String(error)
       }, 
       { status: 500 }
     );
@@ -149,12 +149,12 @@ export async function POST(request: Request) {
       // This is where you'd connect to your LLM of choice to get the answer
       message: "Question answering directly from PDF URL is not implemented in this example"
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error answering question:", error);
     return NextResponse.json(
       { 
         error: "Failed to answer question",
-        details: error.message 
+        details: error instanceof Error ? error.message : String(error)
       }, 
       { status: 500 }
     );

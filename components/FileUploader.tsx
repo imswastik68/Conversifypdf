@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useDropzone } from 'react-dropzone';
@@ -19,11 +18,11 @@ import { useRouter } from "next/navigation";
 
 function FileUploader() {
     const router = useRouter();
-    const [uploadedFile, setUploadedFile] = useState(null);
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
-    const fileInputRef = useRef(null);
-    const uploadStartTimeRef = useRef(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const uploadStartTimeRef = useRef<number | null>(null);
 
     // Reset progress when file is removed
     useEffect(() => {
@@ -36,7 +35,7 @@ function FileUploader() {
         if (acceptedFiles && acceptedFiles.length > 0) {
             const file = acceptedFiles[0];
             if (file.type === 'application/pdf') {
-                setUploadedFile(file as any); // Type assertion to fix type error
+                setUploadedFile(file);
                 toast.success("File uploaded successfully!");
             } else {
                 toast.error("Please upload a PDF file only");
@@ -147,7 +146,7 @@ function FileUploader() {
             const file = files[0];
             if (file.type === 'application/pdf') {
                 // Use URL.createObjectURL for large files to avoid unnecessary data copying
-                setUploadedFile(file as any); // Type assertion to fix type error
+                setUploadedFile(file);
                 toast.success("File uploaded successfully!");
             } else {
                 toast.error("Please upload a PDF file only");

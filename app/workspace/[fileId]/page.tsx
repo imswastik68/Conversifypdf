@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import TextEditor from "../_components/TextEditor";
 import WorkspaceHeader from "../_components/WorkspaceHeader";
 import PdfViewer from "../_components/PdfViewer";
+import { useEffect } from "react";
 
 function Workspace() {
   const params = useParams();

@@ -21,10 +21,11 @@ export default function Home() {
 
   useEffect(() => {
     const CheckUser = async () => {
+      if (!user?.primaryEmailAddress?.emailAddress) return;
       await createUser({
-        email: user?.primaryEmailAddress?.emailAddress,
-        userName: user?.fullName,
-        imageUrl: user?.imageUrl
+        email: user.primaryEmailAddress.emailAddress,
+        userName: user.fullName || '',
+        imageUrl: user.imageUrl || ''
       });
     };
 

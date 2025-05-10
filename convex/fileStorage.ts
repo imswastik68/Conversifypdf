@@ -126,10 +126,10 @@ export const CheckFileExists = query({
             } catch (error) {
                 return { 
                     exists: false, 
-                    message: "Storage error: " + error.message, 
+                    message: "Storage error: " + (error instanceof Error ? error.message : String(error)),
                     storageId: fileRecord.storageId,
                     fileUrl: null,
-                    debugInfo: { ...debugInfo, error: error.message }
+                    debugInfo: { ...debugInfo, error: error instanceof Error ? error.message : String(error) }
                 };
             }
         }
@@ -206,7 +206,7 @@ export const fixFileRecord = mutation({
             } catch (error) {
                 return {
                     success: false,
-                    message: "Error generating URL: " + error.message,
+                    message: "Error generating URL: " + (error instanceof Error ? error.message : String(error)),
                     fileRecord
                 };
             }

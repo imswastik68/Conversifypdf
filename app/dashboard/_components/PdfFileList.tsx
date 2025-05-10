@@ -25,25 +25,31 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-export default function PdfFileList({ files }) {
+interface FileType {
+  _id: string;
+  _creationTime: number;
+  fileId: string;
+  storageId: string;
+  fileName: string;
+  fileUrl: string;
+  createdBy: string;
+}
+
+export default function PdfFileList({ files }: { files: FileType[] }) {
   const router = useRouter()
-  const [fileToDelete, setFileToDelete] = useState(null)
-  const deleteFile = useMutation(api.files.deleteFile)
+  const [fileToDelete, setFileToDelete] = useState<string | null>(null)
+  const deleteFile = useMutation(api.fileStorage.fixFileRecord)
   
-  const handleChat = (fileId) => {
+  const handleChat = (fileId: string) => {
     router.push(`/chat/${fileId}`)
   }
   
-  const handleDelete = async () => {
-    if (!fileToDelete) return
-    
+  const handleDelete = async (fileId: string) => {
     try {
-      await deleteFile({ fileId: fileToDelete })
-      toast.success("File deleted successfully")
-      setFileToDelete(null)
+      await deleteFile({ fileId })
+      router.refresh()
     } catch (error) {
       console.error("Error deleting file:", error)
-      toast.error("Failed to delete file")
     }
   }
   
@@ -132,7 +138,7 @@ export default function PdfFileList({ files }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction 
-              onClick={handleDelete}
+              onClick={() => handleDelete(fileToDelete as string)}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               Delete
